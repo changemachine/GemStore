@@ -1,0 +1,32 @@
+.jumbotron h1 {
+  color: snow !important;
+  text-shadow: 5px 5px 10px #000000;
+  margin-top: 0;
+  }
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding: 25px 0;
+  background: url('/images/planetary_gemologists.jpg') no-repeat;
+  background-position: center;
+  background-size: 100%;
+
+}
+
+.container {
+  margin: 40px;
+}
+
+.adminNav {
+  display: inline;
+}
+
+
+.adminSearch {
+  float: right;
+}
+
+.stuList {
+  font-size: 18px;
+}
