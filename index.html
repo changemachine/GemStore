@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en" ng-app='gemStore'>
 <head>
-    <link href="css/styles.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="css/styles.css" rel="stylesheet" type="text/css">
   <!-- Material Design for Bootstrap -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/css/material-fullpalette.css"> -->
   <!-- Include roboto.css to use the Roboto web font, material.css to include the theme and ripples.css to style the ripple effect
@@ -52,17 +52,31 @@
             {{ product.spec }}
           </div>
 
+      <!-- REVIEW -->
           <div class='panel-footer clearfix' ng-show='panel.isSelected(3)'>
             <blockquote ng-repeat='review in product.reviews' ng-controller="RatingCtrl">
               <div ng-init="rating = star.rating + 5"></div>
               <div class="star-rating" star-rating rating-value="rating" data-max="5" on-rating-selected="rateFunction(rating)"></div>
 
-              {{ review.comment }}<br />
+              <span>"{{ review.comment }}"</span><br />
+              <cite>~ {{ review.author }}</cite><br />
 
+                    <!-- MODAL COMMENT WINDOW -->
+                    <a href="#openModal">Read more...</a>
+                    <div id="openModal" class="modalDialog">
+                      <div>
+                        <a href="#close" title="Close" class="close">X</a>
+                        <blockquote ng-repeat='review in product.reviews'>
+                          <div ng-init="rating = star.rating + 5"></div>
+                          <div class="star-rating" star-rating rating-value="rating" data-max="5" on-rating-selected="rateFunction(rating)"></div>
+                          "{{ review.comment }}"<br />
+                          <cite>by: {{ review.author }}</cite><br />
+                        </blockquote>
+                      </div>
+                    </div>
 
-              <cite>by: {{ review.author }}</cite><br />
-            </blockquote>
-          </div>
+                  </blockquote>
+            </div>
         </section>
       </div><!-- /panel templater  -->
 
