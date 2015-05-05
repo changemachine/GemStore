@@ -18,15 +18,59 @@ header {
   margin: 40px;
 }
 
-.adminNav {
-  display: inline;
+.panel {
+  max-height: 365px;
+  min-height: 365px;
+  overflow: hidden;
+}
+.product {
+    margin: 0 auto;
+    margin-bottom: 20px;
+    border: 2px solid white;
+    max-width: 400px;
+    min-width: 310px;
+    text-align: center;
+}
+
+.nav-tabs {
+  padding-right: auto;
+  padding-left: 1px;
+  padding-top: 10px;
+  align: center;
+  user-select: none;
+  margin: auto;
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
+  line-height: 10px;
+
+}
+
+.panel-footer {
+  min-height: 120px;
+  max-height: 120px;
 }
 
 
-.adminSearch {
-  float: right;
+.rating{
+  color: #a9a9a9;
+  margin: 0;
+  padding: 0;
 }
 
-.stuList {
-  font-size: 18px;
+ul.rating {
+  display: inline-block;
+}
+
+.rating li {
+  list-style-type: none;
+  display: inline-block;
+  padding: 1px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.rating .filled  {
+  color: #21568b;
 }
