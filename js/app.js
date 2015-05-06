@@ -8,15 +8,19 @@
         descrip: 'If you only have one it is lonely.',
         spec: 'None yet',
         reviews: [
-          { stars: 3,
+          { stars: 4,
             comment: 'so good.',
+            author: "Ham",
+          },
+          { stars: 1,
+            comment: 'not good.',
             author: "Jemma",
           },
           { stars: 5,
             comment: 'Pretty good.',
             author: "Jethro",
           },
-          { stars: 9,
+          { stars: 5,
             comment: 'It is good.',
             author: "Jem-guy",
           },
@@ -148,6 +152,13 @@
     $scope.rateFunction = function(rating) {
       // console.log('Rating selected = ' + rating);
     };
+
+    // ==TRYING TO PREVENT BACKGROUND SCROLLING WITH MODAL WINDOWS
+    $('.modalDialog').bind('touchstart', function(event) {
+      event.preventDefault();
+      return;
+    });
+
   });
 
   app.directive('starRating', function() {

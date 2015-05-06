@@ -62,7 +62,7 @@
               <cite>~ {{ review.author }}</cite><br />
 
                     <!-- MODAL COMMENT WINDOW -->
-                    <a href="#openModal">Read more...</a>
+                    <!-- <a href="#openModal">Read more...</a>
                     <div id="openModal" class="modalDialog">
                       <div>
                         <a href="#close" title="Close" class="close">X</a>
@@ -73,10 +73,41 @@
                           <cite>by: {{ review.author }}</cite><br />
                         </blockquote>
                       </div>
-                    </div>
+                    </div> -->
 
-                  </blockquote>
+
+                    <!-- Trigger the modal with a button -->
+      <button type="button" data-toggle="modal" data-target="#myModal">Read more...</button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Modal Header</h4>
             </div>
+            <div class="modal-body">
+              <blockquote ng-repeat='review in product.reviews'>
+                <div ng-init="rating = star.rating + 5"></div>
+                <div class="star-rating" star-rating rating-value="rating" data-max="5" on-rating-selected="rateFunction(rating)"></div>
+                "{{ review.comment }}"<br />
+                <cite>by: {{ review.author }}</cite><br />
+              </blockquote>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+            </blockquote>
+          </div>
         </section>
       </div><!-- /panel templater  -->
 
