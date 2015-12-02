@@ -1,41 +1,67 @@
 <!doctype html>
-<html lang="en" ng-app='gemStore'>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <!-- ICONS n FONTS-->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Calligraffitti' rel='stylesheet' type='text/css'>
+
+  <!-- STYLES -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
     <link href="css/styles.css" rel="stylesheet" type="text/css">
-  <!-- Material Design for Bootstrap -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.3.0/css/material-fullpalette.css"> -->
-  <!-- Include roboto.css to use the Roboto web font, material.css to include the theme and ripples.css to style the ripple effect
-    TRY WITHOUT THESE EVENTUALLY. JUST CDN -->
-    <!-- <link href="dist/css/roboto.min.css" rel="stylesheet">
-    <link href="dist/css/material.min.css" rel="stylesheet">
-    <link href="dist/css/ripples.min.css" rel="stylesheet"> -->
+    <link href="css/modal.css" rel="stylesheet" type="text/css">
+
+  <!-- MODAL -->
+
 </head>
+<!-- TODO:
+  - Star Ratings should reflect object data
+  - Create display of average rating
+  - Checkbox to refine search: [x]name [x]descrip [#] stars
+  -
+-->
 
-<body ng-controller='StoreController as store'><!-- ========================================== -->
-  <div class='container'>
-  <header class='jumbotron'><h1>Ned's House of Gems<h1></header>
 
-  <div class="row">
-    <div class='col-sm-3 product' ng-repeat='product in store.products'>
+<!-- THE BOD =============================================================== -->
+<body ng-app='gemStore' ng-style="modalShown == true ? { 'overflow':'hidden' } : { 'overflow':'visible' }">
 
+<div ng-controller="ModalControl">
+  <div class='container' ng-controller='StoreController as store'>
+  <header class='jumbotron'><h1>The Glass Menagerie</h1></header>
+  <div name="ROW" class="row">
+
+    <div name="SEARCH-BAR" class="well card">
+      <!-- PRODUCT SEARCH FIELD...
+        TODO: Filter results: [x]name [x]descrip [4 stars]
+        https://docs.angularjs.org/api/ng/filter/filter
+        http://toddmotto.com/everything-about-custom-filters-in-angular-js/
+        PAGINATION: when doing pagination, don't include the pagination inside ()
+        Also, Bootstrap 4 replaces wells with cards.
+      -->
+      <input placeholder="Search by name" ng-model="search.name">
+      <input placeholder="Sloppy search" ng-model="search.$">
+
+      <span>{{ filtered.length < store.products.gems.length ? filtered.length + ' items found': '' }}</span>
+    </div>
+
+    <!-- OUTPUT WITH FILTER =============================================== -->
+      <div ng-repeat="product in filtered=( store.products.gems | filter:search)" class='col-sm-3 product'>
+
+      <!-- PANELS -->
       <div class='panel panel-default'>
         <h4 class='panel-heading'>{{ product.name }}</h4>
         <div class='row' name='pic'>
           <img ng-src='{{ product.images[0].thumb }}' class='center-block'/>
         </div>
-        <!--<em class="pull-right">-->
-          <em> {{ product.price | currency }}
-            <button class='btn btn-xs btn-success' ng-show='product.canBuy'> <i class="fa fa-shopping-cart"> </i></button>
+        <em> {{ product.price | currency }}
+          <button ng-show='product.canBuy' class='btn btn-xs btn-success'><i class="fa fa-shopping-cart"></i></button>
           </em>
 
-        <section ng-controller='PanelCtrl as panel'>
+        <section name="PANEL-BODY" ng-controller='PanelCtrl as panel'>
           <ul class='nav nav-tabs' role='tablist'>
-            <li ng-class='{ active: panel.isSelected(1) }'><!-- { class:condition } -->
+            <li ng-class='{ active: panel.isSelected(1) }'>
+                      <!-- { class: condition } -->
               <a ng-click="panel.selectTab(1)"> Description</a>
             </li>
-
             <li ng-class='{ active: panel.isSelected(2) }'>
               <a ng-click="panel.selectTab(2)">Spec</a>
             </li>
@@ -43,117 +69,74 @@
               <a ng-click="panel.selectTab(3)"><span class="glyphicon glyphicon-star"></span>Reviews</a>
             </li>
           </ul>
-
           <div class='panel-footer clearfix' ng-show='panel.isSelected(1)'>
             {{ product.descrip }}
           </div>
+
 
           <div class='panel-footer clearfix' ng-show='panel.isSelected(2)'>
             {{ product.spec }}
           </div>
 
-      <!-- REVIEW -->
           <div class='panel-footer clearfix' ng-show='panel.isSelected(3)'>
-            <blockquote ng-repeat='review in product.reviews' ng-controller="RatingCtrl">
-              <div ng-init="rating = star.rating + 5"></div>
-              <div class="star-rating" star-rating rating-value="rating" data-max="5" on-rating-selected="rateFunction(rating)"></div>
+            <blockquote name="STAR-AVERAGE" ng-controller="StarControl">
+              <!--TODO: FIRST just output 'product.average'. Later, set it -->
 
-              <span>"{{ review.comment }}"</span><br />
-              <cite>~ {{ review.author }}</cite><br />
+              <star-dir ng-click="toggleModal(product)"
+                        rating-value="product.avgRating"
+                        max="5"></star-dir>
+              <div>Average: {{ product.avgRating }}</div>
 
-                    <!-- MODAL COMMENT WINDOW -->
-                    <!-- <a href="#openModal">Read more...</a>
-                    <div id="openModal" class="modalDialog">
-                      <div>
-                        <a href="#close" title="Close" class="close">X</a>
-                        <blockquote ng-repeat='review in product.reviews'>
-                          <div ng-init="rating = star.rating + 5"></div>
-                          <div class="star-rating" star-rating rating-value="rating" data-max="5" on-rating-selected="rateFunction(rating)"></div>
-                          "{{ review.comment }}"<br />
-                          <cite>by: {{ review.author }}</cite><br />
-                        </blockquote>
-                      </div>
-                    </div> -->
+              <button ng-click='toggleModal(product); currentProduct = product;'>See reviews</button>
 
+            </blockquote><!-- /reviews tab -->
+          </div><!-- / reviews -->
 
-                    <!-- Trigger the modal with a button -->
-      <button type="button" data-toggle="modal" data-target="#myModal">Read more...</button>
-
-      <!-- Modal -->
-      <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Modal Header</h4>
-            </div>
-            <div class="modal-body">
-              <blockquote ng-repeat='review in product.reviews'>
-                <div ng-init="rating = star.rating + 5"></div>
-                <div class="star-rating" star-rating rating-value="rating" data-max="5" on-rating-selected="rateFunction(rating)"></div>
-                "{{ review.comment }}"<br />
-                <cite>by: {{ review.author }}</cite><br />
-              </blockquote>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-
-            </blockquote>
-          </div>
-        </section>
+        </section><!-- /panel -->
       </div><!-- /panel templater  -->
-
-    </div><!-- /ng-repeat  -->
-
+    </div><!-- /product loop  -->
   </div> <!-- /row -->
 
 
 
+  <!-- ============================= M O D A L ================================ ========================================================================= -->
+  <modal-view show='modalShown' width='400px' height='60%'>
+    <!-- TRANSCLUDE->-->
+      <div class="modal-body" ng-controller="StoreController as store">
+        <div class="" ng-controller="ModalControl">
+          <div class="modal-header" ng-controller="StarControl">
+            <h2>{{ modalProduct.name }}</h2>
+
+            <h2>Average Rating: {{ modalProduct.avgRating }}</h2>
+              <!--modal-view knows current product.  star-dir does not. -->
 
 
+          </div>
 
+          <!-- REVIEWS LOOP  -->
+          <blockquote ng-repeat='review in modalProduct.reviews'>
+            <star-dir  class='star-dir'
+                      max='5'
+                      star-dir rating-value='rating'>
+            </star-dir>
+            '{{ review.comment }}'<br />
+            <cite>by: {{ review.author }}</cite><br />
+          </blockquote>
 
+        </div>
+        <div class="modal-footer"></div>
+      </div><!-- /store loop -->
+      <!-- adamalbrecht.com, "simple modal dialog directive in angular" -->
+    </modal-view><!-- /////////////////// modal dialog /////////////////// -->
 
+</div><!-- /container /store -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  </div><!--  =========== NUTHIN TO SEE HERE BUT US SCRIPTS! =============== -->
-  <script src='lib/angular.js'></script>
-  <script src='lib/angular-ui-router.js'></script>
-  <script src="lib/jquery-1.11.2.js"></script>
-  <!--<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>-->
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-  <script src="dist/js/ripples.min.js"></script>
-  <script src="dist/js/material.min.js"></script>
-  <script>
-      $(document).ready(function() {
-          // This command is used to initialize some elements and make them work properly
-          $.material.init();
-      });
-  </script>
+  </div>
+  <!--  =========== NUTHIN TO SEE HERE BUT US SCRIPTS! =============== -->
+  <script src="lib/jquery-2.1.4.min.js"></script>
+  <script src='lib/angular/angular.min.js'></script>
+  <script src='lib/angular/angular-ui-router.js'></script>
+  <script src="lib/bootstrap/js/bootstrap.min.js"></script>
   <script src='js/app.js'></script>
 </body>
 </html>
